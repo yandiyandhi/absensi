@@ -20,7 +20,7 @@ class DashboardController extends Controller
                 $query->whereDate('tanggal', Carbon::today()); // belum ada presensi hari ini
             })
             ->get();
-
+            
         return view('dashboard', compact('presensi', 'user', 'out', 'belumPresensi'));
     }
 }

@@ -9,12 +9,44 @@ use App\Models\User;
 use App\Services\Izin\IzinService;
 use Exception;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Request;
 
 class IzinController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        return view('izin.index');
+        $tanggalAwal = $request->input('tanggal_awal');
+        $tanggalAkhir = $request->input('tanggal_akhir');
+
+        $query = Izin::with(['user', 'jenisIzin'])
+            ->where('status', 'pending');
+
+        // filter role
+        if (method_exists(auth()->user(), 'hasRole')) {
+            if (!auth()->user()->hasRole('admin')) {
+                $query->where('user_id', auth()->id());
+            }
+        } else {
+            // fallback kalau tidak pakai spatie (optional, sesuaikan)
+            // contoh:
+            // if (auth()->user()->role != 'admin') { ... }
+        }
+
+        // filter tanggal
+        $query->when($tanggalAwal && $tanggalAkhir, function ($q) use ($tanggalAwal, $tanggalAkhir) {
+            $q->whereBetween('tanggal', [$tanggalAwal, $tanggalAkhir]);
+        })->when($tanggalAwal && !$tanggalAkhir, function ($q) use ($tanggalAwal) {
+            $q->whereDate('tanggal', '>=', $tanggalAwal);
+        })->when(!$tanggalAwal && $tanggalAkhir, function ($q) use ($tanggalAkhir) {
+            $q->whereDate('tanggal', '<=', $tanggalAkhir);
+        });
+
+        // order (lebih aman)
+        $query->orderBy('created_at', 'desc');
+        $data = $query->paginate(10)->withQueryString();
+
+        // dd($data);
+        return view('izin.index', compact('data'));
     }
 
     public function approval_izin()

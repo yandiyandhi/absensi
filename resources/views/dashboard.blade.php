@@ -81,13 +81,9 @@
                 <ul class="splide__list">
                     @forelse ($presensi as $item)
                         <li class="splide__slide">
-                            @if (empty($item->foto_masuk))
-                                <img src="{{ asset('assets/img/sample/logo.png') }}" alt="img"
-                                    class="image-block imaged w48">
-                            @else
-                                <img src="{{ asset('storage/' . $item->foto_masuk) }}" alt="img"
-                                    class="image-block imaged w48 clickable-img">
-                            @endif
+                            <img src="{{ asset($item->foto_masuk ? 'storage/' . $item->foto_masuk : 'assets/img/sample/logo.png') }}"
+                                alt="img"
+                                class="image-block imaged w48 {{ $item->foto_masuk ? 'clickable-img' : '' }}">
                         </li>
                     @empty
                         <li class="splide__slide">

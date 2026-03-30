@@ -10,6 +10,8 @@ class Izin extends Model
 {
     use HasFactory, SoftDeletes;
 
+    protected $casts = ['jam_mulai' => 'datetime:H:i', 'jam_selesai' => 'datetime:H:i'];
+
     protected $guarded = ['id'];
 
     public function user()
