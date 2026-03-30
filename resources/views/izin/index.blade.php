@@ -59,7 +59,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="5" class="text-center">Tidak ada data izin</td>
+                                <td colspan="6" class="text-center">Tidak ada data izin</td>
                             </tr>
                         @endforelse
                     </tbody>

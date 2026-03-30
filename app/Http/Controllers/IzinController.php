@@ -26,10 +26,6 @@ class IzinController extends Controller
             if (!auth()->user()->hasRole('admin')) {
                 $query->where('user_id', auth()->id());
             }
-        } else {
-            // fallback kalau tidak pakai spatie (optional, sesuaikan)
-            // contoh:
-            // if (auth()->user()->role != 'admin') { ... }
         }
 
         // filter tanggal
