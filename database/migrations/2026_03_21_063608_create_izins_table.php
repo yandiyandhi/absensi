@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('izins', function (Blueprint $table) {
             $table->id();
+            $table->uuid('uuid');
             $table->foreignId('user_id')->constrained()->nullable();
             $table->foreignId('kantor_id')->nullable()->constrained();
             $table->foreignId('jenis_izin_id')->nullable()->constrained();
@@ -22,7 +23,7 @@ return new class extends Migration
             $table->time('jam_selesai')->nullable();
             $table->text('alasan')->nullable();
             $table->string('file')->nullable();
-            $table->enum('status', ['pending', 'disetujui', 'ditolak'])->default('pending');
+            $table->enum('status', ['pending', 'disetujui', 'ditolak', 'batal'])->default('pending');
             $table->foreignId('approved_by')->nullable()->constrained('users')->nullOnDelete();
             $table->timestamp('approved_at')->nullable();
             $table->timestamps();

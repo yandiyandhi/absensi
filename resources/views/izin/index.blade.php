@@ -45,6 +45,9 @@
                             <th scope="col">Masuk</th>
                             <th scope="col">Keluar</th>
                             <th scope="col">Keterangan</th>
+                            <th scope="col">Foto</th>
+                            <th scope="col">Status</th>
+                            <th scope="col">Aksi</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -52,14 +55,55 @@
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
                                 <td>{{ $item->user->name }}</td>
-                                <td>{{ $item->tanggal }}</td>
-                                <td>{{ $item->jam_mulai->format('H:i') }}</td>
-                                <td>{{ $item->jam_selesai->format('H:i') }}</td>
-                                <td>{{ $item->alasan }}</td>
+                                <td>{{ $item->tanggal ? $item->tanggal : '' }}</td>
+                                <td>{{ $item->jam_mulai ? $item->jam_mulai->format('H:i') : '-' }}</td>
+                                <td>{{ $item->jam_selesai ? $item->jam_selesai->format('H:i') : '-' }}</td>
+                                <td>{{ $item->alasan ? $item->alasan : '' }}</td>
+                                <td>
+                                    @if (empty($item->file))
+                                        <span>Tidak ada foto</span>
+                                    @else
+                                        <a href="{{ asset('storage/' . $item->file) }}" target="_blank">
+                                            Lihat Foto
+                                        </a>
+                                    @endif
+                                </td>
+                                <td>
+                                    {{ $item->status }}
+                                </td>
+                                <td>
+                                    @if ($item->status == 'pending')
+                                        <div class="dropdown position-static">
+                                            <a href="#" role="button" data-bs-toggle="dropdown">
+                                                <ion-icon name="ellipsis-vertical-outline"
+                                                    style="font-size:20px;"></ion-icon>
+                                            </a>
+
+                                            <ul class="dropdown-menu dropdown-menu-end z-1000">
+                                                <li>
+                                                    <a class="dropdown-item"
+                                                        href="{{ route('izin.edit', ['id' => $item->uuid]) }}">
+                                                        Edit
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a class="dropdown-item text-danger cancelIzin"
+                                                        href="javascript:void(0)" data-id="{{ $item->id }}">
+                                                        Batal
+                                                    </a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    @else
+                                        <div class="dropdown position-static">
+                                            <ion-icon name="ellipsis-vertical-outline" style="font-size:20px;"></ion-icon>
+                                        </div>
+                                    @endif
+                                </td>
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="6" class="text-center">Tidak ada data izin</td>
+                                <td colspan="9" class="text-center">Tidak ada data izin</td>
                             </tr>
                         @endforelse
                     </tbody>
@@ -67,4 +111,14 @@
             </div>
         </div>
     </div>
+
+    <form id="formCancelIzin" method="POST">
+        @csrf
+        @method('PUT')
+    </form>
+
+    @include('partials.alert')
 @endsection
+@push('myscript')
+    <script src="{{ asset('assets/js/script/tools.js') }}"></script>
+@endpush

@@ -11,6 +11,7 @@ use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
+use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\PermissionRegistrar;
 
@@ -85,6 +86,77 @@ class DatabaseSeeder extends Seeder
         ]);
 
         $user->syncRoles('admin');
+
+        app()[PermissionRegistrar::class]->forgetCachedPermissions();
+
+        $permissions = [
+
+            // departemen
+            'departemen.view',
+            'departemen.create',
+            'departemen.update',
+            'departemen.delete',
+
+            // jabatan
+            'jabatan.view',
+            'jabatan.create',
+            'jabatan.update',
+            'jabatan.delete',
+
+            // kantor
+            'kantor.view',
+            'kantor.create',
+            'kantor.update',
+            'kantor.delete',
+
+            // jenis izin
+            'jenisizin.view',
+            'jenisizin.create',
+            'jenisizin.update',
+            'jenisizin.delete',
+
+            // user
+            'user.view',
+            'user.create',
+            'user.update',
+            'user.role',
+            'user.password',
+
+            // cuti
+            'listcuti.view',
+            'approval.cuti',
+
+            // izin
+            'listizin.view',
+            'approval.izin',
+
+            // role
+            'role.view',
+            'role.create',
+            'role.edit',
+            'role.permission',
+
+            // permission
+            'permission.view',
+            'permission.create',
+            'permission.update',
+            'permission.delete',
+
+            // acara
+            'acara.view',
+            'acara.create',
+            'acara.edit',
+            'acara.detail',
+            'acara.update',
+
+        ];
+
+        foreach ($permissions as $permission) {
+            Permission::firstOrCreate([
+                'name' => $permission,
+                'guard_name' => 'web'
+            ]);
+        }
 
         app()[PermissionRegistrar::class]->forgetCachedPermissions();
     }

@@ -34,13 +34,37 @@ class IzinService
         });
     }
 
-    public function update(int $id, array $data)
+    public function update($id, array $data)
     {
-        // Logic to update an existing izin
+        $izin = Izin::where('id', $id)->first();
+        return DB::transaction(function () use ($data, $izin) {
+            if (isset($data['file']) && $data['file'] instanceof UploadedFile) {
+
+                $file = $data['file'];
+                $filename = uniqid() . '.jpg';
+
+                $manager = new ImageManager(new Driver());
+
+                $image = $manager->read($file)
+                    ->resize(1200, null)
+                    ->toJpeg(80);
+
+                Storage::disk('public')->put('upload_izin/' . $filename, (string) $image);
+
+                $data['file'] = 'upload_izin/' . $filename;
+            }
+
+            return $izin->update($data);
+        });
     }
 
-    public function delete(int $id)
+    public function cancel($id)
     {
-        // Logic to delete an izin
+        $izin = Izin::findOrFail($id);
+        return DB::transaction(function () use ($izin) {
+            $izin->status = "batal";
+
+            return $izin->save();
+        });
     }
 }

@@ -156,6 +156,26 @@ $(document).on("click", ".deleteKantor", function () {
     });
 });
 
+// Cancel Izin
+$(document).on("click", ".cancelIzin", function () {
+    const id = $(this).data("id");
+
+    Swal.fire({
+        text: "Pengajuan izin akan dibatalkan",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Ya, Batal",
+        cancelButtonText: "Batal",
+        confirmButtonColor: "#d33",
+        width: "80%",
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $("#formCancelIzin").attr("action", `/izin/cancel/${id}`);
+            $("#formCancelIzin").submit();
+        }
+    });
+});
+
 // Approval izin
 // Setujui Izin
 $(document).on("click", ".SetujuiIzin", function () {

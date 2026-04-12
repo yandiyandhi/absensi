@@ -26,10 +26,10 @@ class IzinRequest extends FormRequest
             'kantor_id' => 'required|exists:kantors,id',
             'jenis_izin_id' => 'required|exists:jenis_izins,id',
             'tanggal' => 'required|date',
-            'jam_mulai' => 'required|date_format:H:i',
-            'jam_selesai' => 'required|date_format:H:i|after:jam_mulai',
+            'jam_mulai' => 'nullable|date_format:H:i',
+            'jam_selesai' => 'nullable|date_format:H:i|after:jam_mulai',
             'alasan' => 'required|string|max:255',
-            'file' => 'required|image|mimes:jpeg,png,jpg|max:10240'
+            'file' => 'image|mimes:jpeg,png,jpg|max:10240'
         ];
     }
 }

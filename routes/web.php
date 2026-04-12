@@ -21,15 +21,6 @@ Route::get('/', function () {
     return redirect()->route('login');
 });
 
-// Route::get('/rolesync', function () {
-//     $id = 2;
-
-//     $user = \App\Models\User::findOrFail($id);
-
-//     $user->syncRoles('admin');
-
-//     return 'Role berhasil di set';
-// });
 
 Route::get('/dashboard', [DashboardController::class, 'index'])
     ->middleware(['auth', 'verified'])
@@ -89,6 +80,9 @@ Route::middleware('auth')->group(function () {
         Route::get('/izin', 'index')->name('izin.index');
         Route::get('/izin/add', 'create')->name('izin.create');
         Route::post('/izin', 'store')->name('izin.store');
+        Route::get('/izin/edit/{id}', 'edit')->name('izin.edit');
+        Route::put('/izin/{id}', 'update')->name('izin.update');
+        Route::put('/izin/cancel/{id}', 'cancel')->name('izin.cancel');
     });
 
     Route::controller(JenisIzinController::class)->group(function () {

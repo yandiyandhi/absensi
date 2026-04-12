@@ -5,11 +5,12 @@ namespace App\Http\Controllers;
 use App\Http\Requests\IzinRequest;
 use App\Models\Izin;
 use App\Models\JenisIzin;
+use App\Models\Kantor;
 use App\Models\User;
 use App\Services\Izin\IzinService;
 use Exception;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class IzinController extends Controller
 {
@@ -22,9 +23,9 @@ class IzinController extends Controller
             ->where('status', 'pending');
 
         // filter role
-        if (method_exists(auth()->user(), 'hasRole')) {
-            if (!auth()->user()->hasRole('admin')) {
-                $query->where('user_id', auth()->id());
+        if (method_exists(Auth::user(), 'hasRole')) {
+            if (!Auth::user()->hasRole('admin')) {
+                $query->where('user_id', Auth::id());
             }
         }
 
@@ -99,5 +100,29 @@ class IzinController extends Controller
         } catch (Exception $th) {
             return redirect()->back()->with('error', 'Izin gagal diajukan.');
         }
+    }
+
+    public function edit($id)
+    {
+        $data = Izin::where('uuid', $id)->with(['user', 'jenisIzin', 'kantor'])->first();
+        $jenis_izin = JenisIzin::orderBy('nama_izin', 'asc')->get();
+        $kantor = Kantor::orderBy('nama_kantor', 'asc')->get();
+
+        return view('izin.editIzin', compact('data', 'jenis_izin', 'kantor'));
+    }
+
+    public function update(IzinRequest $request, $id, IzinService $izinservice)
+    {
+        $izinservice->update($id, $request->validated());
+
+        return redirect()->back()->with('success', 'Data izi berhasil di update.');
+    }
+
+    public function cancel($id, IzinService $izinservice)
+    {
+
+        $izinservice->cancel($id);
+
+        return redirect()->back()->with('success', 'Izin berhasil dibatalkan');
     }
 }

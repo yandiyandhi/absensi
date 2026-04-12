@@ -53,5 +53,6 @@ class UserObserver
     public function saving(User $user)
     {
         $user->name = Str::title($user->name);
+        $user->username = Str::lower($user->username);
     }
 }

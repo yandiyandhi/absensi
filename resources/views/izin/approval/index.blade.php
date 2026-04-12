@@ -32,9 +32,13 @@
                                 <td>{{ $item->jam_mulai }}</td>
                                 <td>{{ $item->jam_selesai }}</td>
                                 <td>
-                                    <a href="{{ asset('storage/' . $item->file) }}" target="_blank">
-                                        Lihat Foto
-                                    </a>
+                                    @if (empty($item->file))
+                                        <span>Tidak ada foto</span>
+                                    @else
+                                        <a href="{{ asset('storage/' . $item->file) }}" target="_blank">
+                                            Lihat Foto
+                                        </a>
+                                    @endif
                                 </td>
                                 <td>
                                     <div class="dropdown position-static">

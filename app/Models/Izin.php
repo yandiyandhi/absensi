@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Str;
 
 class Izin extends Model
 {
@@ -27,5 +28,17 @@ class Izin extends Model
     public function jenisIzin()
     {
         return $this->belongsTo(JenisIzin::class);
+    }
+
+    public function getRouteKeyName()
+    {
+        return 'uuid';
+    }
+
+    protected static function booted()
+    {
+        static::creating(function ($user) {
+            $user->uuid = Str::uuid();
+        });
     }
 }
